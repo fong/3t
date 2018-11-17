@@ -22,6 +22,72 @@
   font-size: large;
 }
 
+/* .item { grid-area: item; } */
+.grid-align {
+  margin-top: 5%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.box {
+  position: relative;
+}
+
+.box::before {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  content: ' ';
+  display: block;
+  width: 100%;
+  padding-top: 100%;
+}
+
+.box > img{
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+  margin: 10%;
+}
+
+@media all and (orientation:portrait) {
+  .grid-box {
+    height: 40vw;
+    width: auto;
+    padding-left: 40vw;
+    position: relative;
+  }
+}
+
+@media all and (orientation:landscape) {
+  .grid-box {
+    width: 40vw;
+    padding-top: 40vw;
+    position: relative;
+  }
+}
+
+.grid-container {
+  position:  absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  display: grid;
+  grid-template-columns: 32% 32% 32%;
+  grid-gap: 3%;
+  background-color: rgb(0, 0, 0);
+}
+.grid-container > div {
+  background-color: rgba(255, 255, 255, 1);
+  text-align: center;
+  /* padding: 20px 0; */
+  font-size: 30px;
+}
+
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
