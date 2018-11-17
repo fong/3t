@@ -25,6 +25,7 @@ class App extends React.Component<{}, IState> {
 		}     	
 		this.selectNewMeme = this.selectNewMeme.bind(this)
 		this.fetchMemes = this.fetchMemes.bind(this)
+		this.toggle = this.toggle.bind(this)
 		this.fetchMemes("")	
 	}
 
@@ -35,34 +36,34 @@ class App extends React.Component<{}, IState> {
 			<div className="grid-align">
 				<div className="grid-box">
 					<div className="grid-container">
-						<div className="box">
+						<div className="box" onClick={() => this.toggle(0)}>
 							<Box boxID="0" board={this.state.board}></Box>
 						</div>
-						<div className="box">
+						<div className="box" onClick={() => this.toggle(1)}>
 							<Box boxID="1" board={this.state.board}></Box>
 						</div>
-						<div className="box">
+						<div className="box" onClick={() => this.toggle(2)}>
 							<Box boxID="2" board={this.state.board}></Box>
 						</div> 
-						<div className="box">
+						<div className="box" onClick={() => this.toggle(3)}>
 							<Box boxID="3" board={this.state.board}></Box>
 						</div>
-						<div className="box">
+						<div className="box" onClick={() => this.toggle(4)}>
 							<Box boxID="4" board={this.state.board}></Box>
 						</div>
-						<div className="box">
+						<div className="box" onClick={() => this.toggle(5)}>
 							<Box boxID="5" board={this.state.board}></Box>
 						</div>
-						<div className="box">
+						<div className="box" onClick={() => this.toggle(6)}>
 							<Box boxID="6" board={this.state.board}></Box>
 						</div>
-						<div className="box">
+						<div className="box" onClick={() => this.toggle(7)}>
 							<Box boxID="7" board={this.state.board}></Box>
 						</div>
-						<div className="box">
+						<div className="box" onClick={() => this.toggle(8)}>
 							<Box boxID="8" board={this.state.board}></Box>
 						</div>
-						<div className="box">
+						<div className="box" onClick={() => this.toggle(9)}>
 							<Box boxID="9" board={this.state.board}></Box>
 						</div>
 					</div>
@@ -76,6 +77,20 @@ class App extends React.Component<{}, IState> {
 	private selectNewMeme(newMeme: any) {
 		this.setState({
 			currentMeme: newMeme
+		})
+	}
+
+	private toggle(boxID: number) {
+		let temp = this.state.board;
+		if (temp[boxID] == 0){
+			temp[boxID] = 1;
+		} else if (temp[boxID] == 1){
+			temp[boxID] = 2;
+		} else if (temp[boxID] == 2){
+			temp[boxID] = 0;
+		}
+		this.setState({
+			board: temp
 		})
 	}
 
