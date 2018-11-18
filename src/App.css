@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  font-family: 'Quicksand', 'Helvetica', sans-serif;
 }
 
 .App-logo {
@@ -22,9 +23,23 @@
   font-size: large;
 }
 
+.status_text_container {
+  margin: 2% 0;
+  width: 100%;
+  text-align: center;
+}
+
+.status_text_container > div{
+  font-size: 3em;
+}
+
+.status_text_container > button{
+  font-size: 1.2em;
+}
+
 /* .item { grid-area: item; } */
 .grid-align {
-  margin-top: 5%;
+  margin-top: 2%;
   display:flex;
   justify-content:center;
   align-items:center;
@@ -53,20 +68,60 @@
   margin: 10%;
 }
 
+.player {
+  position: absolute;
+  padding: 16px;
+  font-size: 1.5em;
+}
+
 @media all and (orientation:portrait) {
   .grid-box {
-    height: 40vw;
-    width: auto;
-    padding-left: 40vw;
+    height: 60vw;
+    /* width: auto; */
+    padding-left: 60vw;
     position: relative;
+  }
+
+  .player-one {
+    left: 0;
+    top: calc(70vw + 64px);
+    width: 40vw;
+    margin-top: 5%;
+    float: left;
+    text-align: left;
+  }
+
+  .player-two {
+    right: 0;
+    top: calc(70vw + 64px);
+    width: 40vw;
+    margin-top: 5%;
+    float: right;
+    text-align: right;
   }
 }
 
 @media all and (orientation:landscape) {
   .grid-box {
-    width: 40vw;
-    padding-top: 40vw;
+    width: 36vw;
+    padding-top: 36vw;
     position: relative;
+  }
+
+  .player-one {
+    left: 0;
+    top: 0;
+    width: 28vw;
+    float: left;
+    text-align: left;
+  }
+
+  .player-two {
+    right: 0;
+    top: 0;
+    width: 28vw;
+    float: right;
+    text-align: right;
   }
 }
 
@@ -77,8 +132,8 @@
   bottom: 0;
   right: 0;
   display: grid;
-  grid-template-columns: 32% 32% 32%;
-  grid-gap: 3%;
+  grid-template-columns: 31% 31% 31%;
+  grid-gap: calc(7%/2);
   background-color: rgb(0, 0, 0);
 }
 .grid-container > div {

@@ -27,7 +27,7 @@ export default class Box extends React.Component<IProps, IState> {
                 <img src={o} width={'80%'}></img>	
             );
         }
-        else if (this.props.board[this.props.boxID] == 2) {
+        else if (this.props.board[this.props.boxID] == 4) {
             return (
                 <img src={x} width={'80%'}></img>	
             );
