@@ -30,6 +30,6 @@ steps:
 
 - task: PublishBuildArtifacts@1
   inputs:
-    pathtoPublish: '$(System.DefaultWorkingDirectory)/build.zip' 
+    pathtoPublish: '$(System.DefaultWorkingDirectory)' 
     artifactName: 'build' 
 
