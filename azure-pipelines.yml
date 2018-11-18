@@ -27,9 +27,11 @@ steps:
     rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
     archiveFile: '$(System.DefaultWorkingDirectory)/build.zip'
     includeRootFolder: false
+    replaceExistingArchive: true
 
 - task: PublishBuildArtifacts@1
   inputs:
-    pathtoPublish: '$(System.DefaultWorkingDirectory)' 
-    artifactName: 'build.zip' 
+#    pathtoPublish: '$(System.DefaultWorkingDirectory)' 
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    artifactName: 'build' 
 
