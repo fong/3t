@@ -34,7 +34,9 @@ export default class Box extends React.Component<IProps, IState> {
         }
         else {
             return (
-                <div></div>	
+                <div>
+                
+                </div>	
             );
         }
     }

@@ -37,12 +37,22 @@
   font-size: 1.2em;
 }
 
-/* .item { grid-area: item; } */
-.grid-align {
-  margin-top: 2%;
-  display:flex;
-  justify-content:center;
-  align-items:center;
+.grid-container {
+  position:  absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  display: grid;
+  grid-template-columns: 31% 31% 31%;
+  grid-gap: calc(7%/2);
+  background-color: rgb(0, 0, 0);
+}
+.grid-container > div {
+  background-color: rgba(255, 255, 255, 1);
+  text-align: center;
+  /* padding: 20px 0; */
+  font-size: 30px;
 }
 
 .box {
@@ -70,11 +80,27 @@
 
 .player {
   position: absolute;
+  bottom: 0;
   padding: 16px;
   font-size: 1.5em;
 }
 
+.player-win {
+  background-color: rgb(66, 255, 66) !important; 
+}
+
+.player-lose {
+  background-color: rgb(255, 180, 110) !important;
+}
+
 @media all and (orientation:portrait) {
+  .grid-align {
+    margin-top: 20vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+  }
+
   .grid-box {
     height: 60vw;
     /* width: auto; */
@@ -84,8 +110,8 @@
 
   .player-one {
     left: 0;
-    top: calc(70vw + 64px);
-    width: 40vw;
+    /* top: calc(70vw + 64px); */
+    width: 45vw;
     margin-top: 5%;
     float: left;
     text-align: left;
@@ -93,8 +119,8 @@
 
   .player-two {
     right: 0;
-    top: calc(70vw + 64px);
-    width: 40vw;
+    /* top: calc(70vw + 64px); */
+    width: 45vw;
     margin-top: 5%;
     float: right;
     text-align: right;
@@ -102,9 +128,16 @@
 }
 
 @media all and (orientation:landscape) {
+  .grid-align {
+    margin-top: 10vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+  }
+
   .grid-box {
-    width: 36vw;
-    padding-top: 36vw;
+    width: 30vw;
+    padding-top: 30vw;
     position: relative;
   }
 
@@ -123,24 +156,6 @@
     float: right;
     text-align: right;
   }
-}
-
-.grid-container {
-  position:  absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  display: grid;
-  grid-template-columns: 31% 31% 31%;
-  grid-gap: calc(7%/2);
-  background-color: rgb(0, 0, 0);
-}
-.grid-container > div {
-  background-color: rgba(255, 255, 255, 1);
-  text-align: center;
-  /* padding: 20px 0; */
-  font-size: 30px;
 }
 
 @keyframes App-logo-spin {
