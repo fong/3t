@@ -27,7 +27,7 @@ steps:
     rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
     includeRootFolder: false
 
- - task: PublishBuildArtifacts@1
+- task: PublishBuildArtifacts@1
   inputs:
     pathtoPublish: '$(System.DefaultWorkingDirectory)/build.zip' 
     artifactName: 'build' 
