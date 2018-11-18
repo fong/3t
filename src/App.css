@@ -23,6 +23,37 @@
   font-size: large;
 }
 
+.mainpage-container{
+  text-align: center;
+  margin-top: 10%;
+}
+
+.mode {
+  margin: 5%;
+  border: 2px solid transparent;
+  padding: 2%;
+}
+
+.mode:hover {
+  border: 2px solid black;
+  border-radius: 32px;
+}
+
+.live-games-table {
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.options {
+  margin-top: 2%;
+  font-size: 1.8em;
+}
+
+.mainpage-container > h1{
+  text-align: center;
+  font-size: 4em;
+}
+
 .status_text_container {
   margin: 2% 0;
   width: 100%;

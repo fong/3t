@@ -2,10 +2,8 @@ import * as React from "react";
 import Box from './Box';
 
 interface IProps {
-	next: any,
-	board: any[],
-	victory: any
-} 
+
+}
 
 interface IState {
 	next: any,
