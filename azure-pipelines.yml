@@ -24,8 +24,8 @@ steps:
 
 - task: ArchiveFiles@2
   inputs:
-    rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
-    archiveFile: '$(System.DefaultWorkingDirectory)/build/build.zip'
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/build'
+    archiveFile: '$(System.DefaultWorkingDirectory)/build.zip'
     includeRootFolder: false
     replaceExistingArchive: true
 
