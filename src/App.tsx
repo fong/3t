@@ -7,7 +7,8 @@ import Game from './components/Game';
 import MainScreen from './components/MainScreen';
 
 interface IState {
-	screen: any
+	screen: any,
+	username: string
 }
 
 class App extends React.Component<{}, IState> {
@@ -15,7 +16,8 @@ class App extends React.Component<{}, IState> {
 	constructor(props: any) {
         super(props)
         this.state = {
-			screen: 'mainscreen'
+			screen: 'mainscreen',
+			username: "",
 		}     	
 		this.fetchMemes = this.fetchMemes.bind(this)
 		this.fetchMemes("")	
@@ -27,12 +29,17 @@ class App extends React.Component<{}, IState> {
 		});
 	}
 
+	usernameCallback = (d: any) => {
+		this.setState({
+			username: d
+		});
+	}
+
 	public render() {
-		
 		return (
 		<div>
-			{ this.state.screen === 'mainscreen' ? (<MainScreen screen={ this.screenCtrl }></MainScreen>) : (<div></div>) }
-			{ this.state.screen === 'game' ? (<Game></Game>) : (<div></div>) }
+			{ this.state.screen === 'mainscreen' ? (<MainScreen screen={ this.screenCtrl } username={ this.state.username } usernameCallback={this.usernameCallback}></MainScreen>) : (<div></div>) }
+			{ this.state.screen === 'game' ? (<Game screen={ this.screenCtrl }></Game>) : (<div></div>) }
 		</div>
 		);
 	}
