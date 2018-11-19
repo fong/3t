@@ -2,7 +2,7 @@ import * as React from "react";
 import Box from './Box';
 
 interface IProps {
-
+    screen: any
 }
 
 interface IState {
@@ -27,6 +27,7 @@ export default class Game extends React.Component<IProps, IState> {
         this.checkVictory = this.checkVictory.bind(this)
         this.toggle = this.toggle.bind(this)
         this.clear = this.clear.bind(this)
+        this.leaveGame = this.leaveGame.bind(this)
     }
 
 	public render() {
@@ -40,7 +41,24 @@ export default class Game extends React.Component<IProps, IState> {
 		}
        
 		return (
-            <div>
+            <div style={{height: '100%'}}>
+                <div className="header-wrapper">
+                    <div className="header-left">
+                        <button type="button" className="btn btn-outline-danger" onClick={() => this.leaveGame()}>
+                            <i className="material-icons">exit_to_app</i>
+                        </button>
+                        <button type="button" className="btn btn-outline-dark">
+                            <i className="material-icons">settings</i>
+                        </button>
+                    </div>
+                    <div className="header-center">
+                        <h3>Room Code: 543HFG</h3>
+                    </div>
+                    <div className="header-right">
+                        <div>1 watching</div>
+                    </div>
+			    </div>
+
                 <div className="player player-one">
                     <div>
                         Name of Player 1
@@ -64,7 +82,7 @@ export default class Game extends React.Component<IProps, IState> {
                     </div>
                 </div>
                 <div className="grid-align">
-                    <div className="grid-box">
+                    <div className="grid-box noselect">
                         <div className="grid-container">
                             <div id='box-0' className="box" onClick={() => this.toggle(0)}>
                                 <Box boxID="0" board={this.state.board}></Box>
@@ -186,5 +204,9 @@ export default class Game extends React.Component<IProps, IState> {
         for (let i = 0; i < boxes.length; i++){
             boxes[i].className = 'box';
         }
-	}
+    }
+    
+    private leaveGame() {
+        this.props.screen('mainscreen');            
+    }
 }

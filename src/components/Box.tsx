@@ -24,12 +24,12 @@ export default class Box extends React.Component<IProps, IState> {
         // const { open } = this.state;
         if (this.props.board[this.props.boxID] == 1) {
             return (
-                <img src={o} width={'80%'}></img>	
+                <img src={o} width={'80%'} className="noselect"></img>	
             );
         }
         else if (this.props.board[this.props.boxID] == 4) {
             return (
-                <img src={x} width={'80%'}></img>	
+                <img src={x} width={'80%'} className="noselect"></img>	
             );
         }
         else {

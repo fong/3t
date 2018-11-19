@@ -1,31 +1,61 @@
-.App {
-  text-align: center;
-  font-family: 'Quicksand', 'Helvetica', sans-serif;
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+.header-title {
+  display:flex;
+  justify-content:space-evenly;
+  align-items:center;
 }
 
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
+.header-right {
+  flex: 1;          /* shorthand for: flex-grow: 1, flex-shrink: 1, flex-basis: 0 */
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 4px;
+  margin: 4px;
 }
 
-.App-title {
-  font-size: 1.5em;
+.header-center {
+  flex: 1;          /* shorthand for: flex-grow: 1, flex-shrink: 1, flex-basis: 0 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4px;
+  margin: 4px;
 }
 
-.App-intro {
-  font-size: large;
+.header-left {
+  flex: 1;          /* shorthand for: flex-grow: 1, flex-shrink: 1, flex-basis: 0 */
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 4px;
+  margin: 4px;
 }
 
-.mainpage-container{
+.header-left > button {
+  display: table-cell;
+  vertical-align: middle;
+  padding: 4px;
+  margin: 4px;
+  height: 34px;
+}
+
+.mainscreen-container{
   text-align: center;
   margin-top: 10%;
+}
+
+.ms-button {
+  margin: 8px;
 }
 
 .mode {
@@ -110,8 +140,8 @@
 }
 
 .player {
-  position: absolute;
-  bottom: 0;
+  /* position: absolute; */
+  /* bottom: 0; */
   padding: 16px;
   font-size: 1.5em;
 }
@@ -142,6 +172,8 @@
   .player-one {
     left: 0;
     /* top: calc(70vw + 64px); */
+    bottom: 0;
+    position: absolute;
     width: 45vw;
     margin-top: 5%;
     float: left;
@@ -151,6 +183,8 @@
   .player-two {
     right: 0;
     /* top: calc(70vw + 64px); */
+    bottom: 0;
+    position: absolute;
     width: 45vw;
     margin-top: 5%;
     float: right;
