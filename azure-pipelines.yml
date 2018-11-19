@@ -17,12 +17,19 @@ steps:
     npm run build
   displayName: 'npm install and build'
   
-- task: CopyFiles@2
+# - task: ArchiveFiles@2
+#  inputs:
+#    rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+#    archiveFile: '$(System.DefaultWorkingDirectory)/build.zip' 
+
+- task: ArchiveFiles@2
   inputs:
-    contents: $(System.DefaultWorkingDirectory)
-    targetFolder: $(Build.ArtifactStagingDirectory)
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+    archiveFile: '$(System.DefaultWorkingDirectory)/build.zip'
+    includeRootFolder: false
 
 - task: PublishBuildArtifacts@1
   inputs:
-    pathtoPublish: $(Build.ArtifactStagingDirectory)
-    artifactName: build
+    pathtoPublish: '$(System.DefaultWorkingDirectory)' 
+    artifactName: 'build' 
+
