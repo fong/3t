@@ -54,6 +54,10 @@
   margin-top: 10%;
 }
 
+.gamecode {
+  font-family: 'Roboto Mono', monospace;
+}
+
 .ms-button {
   margin: 8px;
 }

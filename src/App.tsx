@@ -3,12 +3,39 @@ import * as React from 'react';
 import './App.css';
 // import MemeDetail from './components/MemeDetail';
 // import MemeList from './components/MemeList';
-import Game from './components/Game';
+import GameScreen from './components/GameScreen';
 import MainScreen from './components/MainScreen';
 
 interface IState {
 	screen: any,
-	username: string
+	player: Player,
+	game: Game
+}
+
+// class Auth {
+//     public playerID: any;
+//     public playerName: string;
+//     public passcode: string;
+// }
+
+class Player {
+	public playerID: any = null;
+	public playerName: any = null;
+	public mmr: any = null;
+	public wins: any = null;
+	public games: any = null;
+}
+
+class Game {
+    public gameID: any;
+    public player1: any;
+    public player2: any;
+    public board: any;
+    public watchers: any;
+    public turn: any;
+    public p1_timestamp: any;
+    public p2_timestamp: any;
+    public winner: any;
 }
 
 class App extends React.Component<{}, IState> {
@@ -17,7 +44,8 @@ class App extends React.Component<{}, IState> {
         super(props)
         this.state = {
 			screen: 'mainscreen',
-			username: "",
+			player: new Player(),
+			game: new Game()
 		}     	
 		this.fetchMemes = this.fetchMemes.bind(this)
 		this.fetchMemes("")	
@@ -29,17 +57,27 @@ class App extends React.Component<{}, IState> {
 		});
 	}
 
-	usernameCallback = (d: any) => {
+	playerCallback = (d: Player) => {
 		this.setState({
-			username: d
+			player: d
+		});
+	}
+
+	gameCallback = (d: Game) => {
+		this.setState({
+			game: d
 		});
 	}
 
 	public render() {
 		return (
 		<div>
-			{ this.state.screen === 'mainscreen' ? (<MainScreen screen={ this.screenCtrl } username={ this.state.username } usernameCallback={this.usernameCallback}></MainScreen>) : (<div></div>) }
-			{ this.state.screen === 'game' ? (<Game screen={ this.screenCtrl }></Game>) : (<div></div>) }
+			{ this.state.screen === 'mainscreen' ? (
+				<MainScreen screen={ this.screenCtrl } player={ this.state.player } playerCallback={this.playerCallback} gameCallback={this.gameCallback}></MainScreen>
+				) : (<div></div>) }
+			{ this.state.screen === 'game' ? (
+				<GameScreen screen={ this.screenCtrl } player={this.state.player} game={this.state.game} gameCallback={this.gameCallback}></GameScreen>
+				) : (<div></div>) }
 		</div>
 		);
 	}
