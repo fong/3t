@@ -1,6 +1,5 @@
 import * as React from "react";
 import Box from './Box';
-import ReactAI from 'react-appinsights';
 
 class Player {
 	public playerID: any = null;
