@@ -374,7 +374,7 @@ class GameScreen extends React.Component<IProps, IState> {
                         </div>
                     </div>
                 </div>
-                <div>
+                <div style={{padding: "2%", textAlign: "center"}}>
                     { this.state.turn == 1 ? ( <div>{this.state.player1.playerName}'s turn</div>) : (<div></div>) }
                     { this.state.turn == 2 ? ( <div>{this.state.player2.playerName}'s turn</div>) : (<div></div>) }
                 </div>
