@@ -47,7 +47,8 @@ interface IState {
 
 export default class MainScreen extends React.Component<IProps, IState> {
 
-    interval: any;
+    interval1: any;
+    interval2: any;
 
     constructor(props: any) {
         super(props) 
@@ -65,7 +66,39 @@ export default class MainScreen extends React.Component<IProps, IState> {
         this.login = this.login.bind(this)
         this.getMyPlayerInfo = this.getMyPlayerInfo.bind(this)
         this.fetchLiveData = this.fetchLiveData.bind(this)
+    }
+
+    componentWillMount(){
+        let url_games = "https://3t-api.azurewebsites.net/api/games";
+        fetch(url_games, {
+            method: 'GET'
+        })
+        .then(res => {
+            res.json().then(body => {
+               this.setState({
+                   liveGames: body
+               })
+            });
+        });
+
+        let url_leaderboards = "https://3t-api.azurewebsites.net/api/players/top?mode=mmr";
+        fetch(url_leaderboards, {
+            method: 'GET'
+        })
+        .then(res => {
+            res.json().then(body => {
+               this.setState({
+                   leaderboard: body
+               })
+            });
+        });
+
         this.fetchLiveData();
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.interval1);
+        clearInterval(this.interval2);
     }
 
     private joinToggle() {
@@ -171,16 +204,15 @@ export default class MainScreen extends React.Component<IProps, IState> {
     }
 
     private startGameCheck() {
-        this.interval = setInterval(() => {
+        this.interval1 = setInterval(() => {
             let url = "https://3t-api.azurewebsites.net/api/games?gameID=" + this.state.create;
             fetch(url, {
                 method: 'GET'
             })
             .then(res => {
                 res.json().then(body => {
-                    console.log(body);
                     if (body["player2"] != null) {
-                        clearInterval(this.interval);
+                        clearInterval(this.interval1);
                         this.props.gameCallback(body);
                         this.props.screen('game');
                     }
@@ -229,7 +261,7 @@ export default class MainScreen extends React.Component<IProps, IState> {
     }
 
     private deleteGame(){
-        clearInterval(this.interval);
+        clearInterval(this.interval1);
         let url = "https://3t-api.azurewebsites.net/api/games?gameID=" + this.state.create;
         fetch(url, {
             method: 'DELETE'
@@ -245,7 +277,7 @@ export default class MainScreen extends React.Component<IProps, IState> {
     }
 
     private fetchLiveData(){
-        this.interval = setInterval(() => {
+        this.interval2 = setInterval(() => {
             let url_games = "https://3t-api.azurewebsites.net/api/games";
             fetch(url_games, {
                 method: 'GET'
@@ -258,7 +290,7 @@ export default class MainScreen extends React.Component<IProps, IState> {
                 });
             });
 
-            let url_leaderboards = "https://3t-api.azurewebsites.net/api/games/top?mode=mmr";
+            let url_leaderboards = "https://3t-api.azurewebsites.net/api/players/top?mode=mmr";
             fetch(url_leaderboards, {
                 method: 'GET'
             })
@@ -269,31 +301,38 @@ export default class MainScreen extends React.Component<IProps, IState> {
                    })
                 });
             });
-        }, 10000);
+        }, 5000);
     }
 
 	public render() {
         // const { open } = this.state
-        let lg: any;
-        let lb: any;
+        let lg: any = [];
+        let lb: any = [];
 
-        this.state.liveGames.array.forEach( (element: Game) => {
-            lg += 
-                <tr>
-                    <th scope="row" className="noselect">{element.gameID}</th>
-                    <td className="noselect">{element.player1}</td>
-                    <td className="noselect">{element.player2}</td>
+        if (Array.isArray(this.state.liveGames)) {
+            for (let i = 0; i < this.state.liveGames.length; i++){
+            lg.push(
+                <tr key={i}>
+                    <th scope="row" className="noselect">{this.state.liveGames[i].gameID}</th>
+                    <td className="noselect">{this.state.liveGames[i].player1}</td>
+                    <td className="noselect">{this.state.liveGames[i].player2}</td>
                 </tr>
-        });
+            );
+            }
+        }
 
-        this.state.leaderboard.array.forEach( (element: Player) => {
-            lb += 
-                <tr>
-                    <th scope="row" className="noselect">{element.playerName}</th>
-                    <td className="noselect">{ element.mmr }</td>
-                    <td className="noselect">{ Math.floor(element.wins/element.games) }%</td>
+        if (Array.isArray(this.state.leaderboard)) {
+            for (let i = 0; i < this.state.leaderboard.length; i++){
+            lb.push(
+                <tr key={i}>
+                    <th scope="row" className="noselect">{i+1}</th>
+                    <th className="noselect">{this.state.leaderboard[i]['playerName']}</th>
+                    <td className="noselect">{this.state.leaderboard[i]['mmr'] }</td>
+                    <td className="noselect">{ Math.floor(this.state.leaderboard[i]['wins']/this.state.leaderboard[i]['games']) || 0}%</td>
                 </tr>
-        });
+            );
+            }
+        }
 
         return (
             <div>
@@ -387,8 +426,8 @@ export default class MainScreen extends React.Component<IProps, IState> {
                                             <tr>
                                             <th scope="col" className="noselect">Rank</th>
                                             <th scope="col" className="noselect">Player</th>
-                                            <th scope="col" className="noselect">Win Rate</th>
                                             <th scope="col" className="noselect">MMR</th>
+                                            <th scope="col" className="noselect">Win Rate</th>
                                             </tr>
                                         </thead>
                                         <tbody>

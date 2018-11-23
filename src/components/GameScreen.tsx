@@ -29,12 +29,14 @@ interface IProps {
 }
 
 interface IState {
-	next: any,
+	turn: any,
 	board: any[],
     winner: any,
     color: any[],
     player1: any,
-    player2: any
+    player2: any,
+    p: any,
+    mutex: boolean,
 }
 
 export default class GameScreen extends React.Component<IProps, IState> {
@@ -44,19 +46,22 @@ export default class GameScreen extends React.Component<IProps, IState> {
     constructor(props: any) {
         super(props)   
         this.state = {
-			next: 1,
+			turn: 0,
 			board: [0, 0, 0, 0, 0, 0, 0, 0, 0],
             winner: 0,
             color: [],
             player1: null,
-            player2: null
-		}     
+            player2: null,
+            p: null,
+            mutex: false
+        }     
         this.checkVictory = this.checkVictory.bind(this)
         this.toggle = this.toggle.bind(this)
         this.clear = this.clear.bind(this)
         this.leaveGame = this.leaveGame.bind(this)
-        this.sync = this.sync.bind(this)
-        
+    }
+
+    componentWillMount(){
         this.sync();
         this.getPlayerInfos();
     }
@@ -87,49 +92,53 @@ export default class GameScreen extends React.Component<IProps, IState> {
         });
     }
     
-    private toggle(boxID: number) {
-        let cv = this.checkVictory();
-		if (!cv.v && (this.state.board[boxID] == 0)){
-			let temp = this.state.board;
-			let next = 0;
-			if (this.state.next === 1){
-				temp[boxID] = 1;
-				next = 2;
-			} else if (this.state.next === 2){
-				temp[boxID] = 4;
-				next = 1;
-			}
-			this.setState({
-				board: temp,
-				next: next
-			})
-		}
-		cv = this.checkVictory();
-		this.setState({
-            winner: cv.v,
-            color: cv.c
-        })
+    private async toggle(boxID: number) {
+        let m = await this.state.mutex;
+        let t = await this.state.turn;
 
-        let p: any;
+        if (this.state.p == 1 || this.state.p == 2){
 
-        if (this.props.player.playerID == this.props.game.player1.playerID){
-            p = 1;
-        } else {
-            p = 2;
-        }
+            if (m == false && t == this.state.p){
+                await this.setState({mutex: true, turn: 10});
+
+                let temp_board = this.state.board;
+
+                if ((this.state.winner == 0 || this.state.winner == 4) && (this.state.board[boxID] == 0)){
+                    if ((t == 1) && this.state.p === 1){
+                        temp_board[boxID] = 1;
+                        t = 2;
+                    } else if ((t == 2) && this.state.p === 2){
+                        temp_board[boxID] = 4;
+                        t = 1;
+                    }
+
+                    let cv = this.checkVictory(temp_board);
         
-        cv.c.forEach((e) => {
-            const box = document.getElementById('box-' + e) as HTMLInputElement;
-            if (cv.v == p) {
-                box.className = 'box player-win'
-            } else {
-                box.className = 'box player-lose'
+                    let url = "https://3t-api.azurewebsites.net/api/games";
+            
+                    let t_body = this.props.game;
+                    t_body.board = JSON.stringify(temp_board);
+                    t_body.turn = t;  
+                    t_body.winner = cv.v;
+                    
+                    console.log(t_body);
+
+                    fetch(url, {
+                        body: JSON.stringify(t_body),
+                        headers: {'cache-control': 'no-cache', 'Access-Control-Allow-Origin': '*', 'Accept': 'application/json',
+                        'Content-Type': 'application/json'},
+                        method: 'PUT'
+                    });
+
+                    await this.setState({
+                        mutex: false
+                    });
+                }
             }
-        })
+        }
     }
     
-    private checkVictory() {
-		let b = this.state.board;
+    private checkVictory(b: any) {
 		for (let i = 0; i < 3; i++){
 			//vertical
 			if (b[i] + b[i+3] + b[i+6] == 3){
@@ -168,6 +177,12 @@ export default class GameScreen extends React.Component<IProps, IState> {
     }
     
     private clear() {
+        const boxes = document.getElementsByClassName('box') as HTMLCollectionOf<Element>;
+
+        for (let i = 0; i < boxes.length; i++){
+            boxes[i].className = 'box';
+        }
+
         let url = "https://3t-api.azurewebsites.net/api/games";
 
         this.props.game.winner = 4;
@@ -182,11 +197,6 @@ export default class GameScreen extends React.Component<IProps, IState> {
                 alert("Unable to reset game");
             }
         });
-        const boxes = document.getElementsByClassName('box') as HTMLCollectionOf<Element>;
-
-        for (let i = 0; i < boxes.length; i++){
-            boxes[i].className = 'box';
-        }
     }
     
     private leaveGame() {
@@ -204,37 +214,74 @@ export default class GameScreen extends React.Component<IProps, IState> {
     }
 
     private sync() {
-        this.interval = setInterval(() => {
-            let url = "https://3t-api.azurewebsites.net/api/games?gameID=" + this.props.game.gameID;
-            fetch(url, {
-                method: 'GET'
-            })
-            .then(res => {
-                if (res.ok){
-                    res.json().then((body: Game) => {
-                        if (body.gameID){
-                            if (body.winner > 0){
-                                this.getPlayerInfos();
+        this.interval = setInterval(async () => {
+            let m = await this.state.mutex
+            if (m == false){
+                let url = "https://3t-api.azurewebsites.net/api/games?gameID=" + this.props.game.gameID;
+                fetch(url, {
+                    headers: {'cache-control': 'no-cache', 'Access-Control-Allow-Origin': '*'},
+                    method: 'GET'
+                })
+                .then(res => {
+                    if (res.ok){
+                        res.json().then((body: any) => {
+                            console.log(body.turn);
+                            if (body.gameID == null){
+                                clearInterval(this.interval);       // exit game if other player has exited game
+                                this.props.gameCallback(new Game());
+                                this.props.screen('mainscreen'); 
+                            } else {
+                                if (body.board == "[0,0,0,0,0,0,0,0,0]"){
+                                    const boxes = document.getElementsByClassName('box') as HTMLCollectionOf<Element>;
+                                    for (let i = 0; i < boxes.length; i++){
+                                        boxes[i].className = 'box';
+                                    }
+                                }
+                                
+                                if (body.winner > 0) {
+                                    this.getPlayerInfos();
+                                };
+
+                                let temp_p;
+                                
+                                if (this.props.player.playerID == this.state.player1.playerID){
+                                    temp_p = 1
+                                } else if (this.props.player.playerID == this.state.player2.playerID){
+                                    temp_p = 2
+                                } else {
+                                    temp_p = 0
+                                }
+                                let cv = this.checkVictory(JSON.parse(body.board));
+                                
+                                cv.c.forEach((e) => {
+                                    const box = document.getElementById('box-' + e) as HTMLInputElement;
+                                    if (cv.v == this.state.p || this.state.p == 0) {
+                                        box.className = 'box player-win'
+                                    } else {
+                                        box.className = 'box player-lose'
+                                    }
+                                })
+                                
+                                if (body.turn == temp_p){
+                                    this.setState({             // update game if new data received
+                                        turn: body.turn,
+                                        board: JSON.parse(body.board),
+                                        winner: cv.v,
+                                        p: temp_p,
+                                        color: cv.c
+                                    });
+                                }
+                                this.props.gameCallback(body);
                             }
-                            this.setState({             // update game if new data received
-                                next: body.turn,
-                                board: body.board,
-                                winner: body.winner
-                            });
-                            this.props.gameCallback(this.props.game);
-                        } else {
-                            clearInterval(this.interval);       // exit game if other player has exited game
-                            this.props.gameCallback(null);
-                            this.props.screen('mainscreen'); 
-                        }
-                    });
-                } else {
-                    clearInterval(this.interval);               // exit game if server returns error
-                    this.props.gameCallback(null);
-                    this.props.screen('mainscreen'); 
-                }
-            });
-        }, 1000);
+                        });
+                    } else {
+                        clearInterval(this.interval);               // exit game if server returns error
+                        this.props.gameCallback(null);
+                        this.props.screen('mainscreen'); 
+                    }
+                });
+            }
+        }, 2000);
     }
 
 	public render() {
@@ -267,59 +314,71 @@ export default class GameScreen extends React.Component<IProps, IState> {
 			    </div>
 
                 <div className="player player-one">
-                    <div>
-                        Name of Player 1
-                    </div>
-                    <div>
-                        MMR: 10
-                    </div>
-                    <div>
-                        Wins: 5
-                    </div>
+                    {this.state.player1 != null ? (
+                        <div>
+                            <div>
+                                {this.state.player1.playerName}
+                            </div>
+                            <div>
+                                MMR: {this.state.player1.mmr}
+                            </div>
+                            <div>
+                                Wins: {this.state.player1.wins}
+                            </div>
+                        </div>) :(<div></div>)
+                    }
                 </div>
                 <div className="player player-two">
-                    <div>
-                        Name of Player 2
-                    </div>
-                    <div>
-                        MMR: 100
-                    </div>
-                    <div>
-                        Wins: 10  
-                    </div>
+                    {this.state.player2 != null ? (
+                        <div>
+                            <div>
+                                {this.state.player2.playerName}
+                            </div>
+                            <div>
+                                MMR: {this.state.player2.mmr}
+                            </div>
+                            <div>
+                                Wins: {this.state.player2.wins}
+                            </div>
+                        </div>) :(<div></div>)
+                    }
                 </div>
                 <div className="grid-align">
                     <div className="grid-box noselect">
                         <div className="grid-container">
-                            <div id='box-0' className="box" onClick={() => this.toggle(0)}>
+                            <div id='box-0' className="box" onClick={async () => await this.toggle(0)}>
                                 <Box boxID="0" board={this.state.board}></Box>
                             </div>
-                            <div id='box-1' className="box" onClick={() => this.toggle(1)}>
+                            <div id='box-1' className="box" onClick={async () => await this.toggle(1)}>
                                 <Box boxID="1" board={this.state.board}></Box>
                             </div>
-                            <div id='box-2' className="box" onClick={() => this.toggle(2)}>
+                            <div id='box-2' className="box" onClick={async () => await this.toggle(2)}>
                                 <Box boxID="2" board={this.state.board}></Box>
                             </div> 
-                            <div id='box-3' className="box" onClick={() => this.toggle(3)}>
+                            <div id='box-3' className="box" onClick={async () => await this.toggle(3)}>
                                 <Box boxID="3" board={this.state.board}></Box>
                             </div>
-                            <div id='box-4' className="box" onClick={() => this.toggle(4)}>
+                            <div id='box-4' className="box" onClick={async () => await this.toggle(4)}>
                                 <Box boxID="4" board={this.state.board}></Box>
                             </div>
-                            <div id='box-5' className="box" onClick={() => this.toggle(5)}>
+                            <div id='box-5' className="box" onClick={async () => await this.toggle(5)}>
                                 <Box boxID="5" board={this.state.board}></Box>
                             </div>
-                            <div id='box-6' className="box" onClick={() => this.toggle(6)}>
+                            <div id='box-6' className="box" onClick={async () => await this.toggle(6)}>
                                 <Box boxID="6" board={this.state.board}></Box>
                             </div>
-                            <div id='box-7' className="box" onClick={() => this.toggle(7)}>
+                            <div id='box-7' className="box" onClick={async () => await this.toggle(7)}>
                                 <Box boxID="7" board={this.state.board}></Box>
                             </div>
-                            <div id='box-8' className="box" onClick={() => this.toggle(8)}>
+                            <div id='box-8' className="box" onClick={async () => await this.toggle(8)}>
                                 <Box boxID="8" board={this.state.board}></Box>
                             </div>
                         </div>
                     </div>
+                </div>
+                <div>
+                    { this.state.turn == 1 ? ( <div>{this.state.player1.playerName}'s turn</div>) : (<div></div>) }
+                    { this.state.turn == 2 ? ( <div>{this.state.player2.playerName}'s turn</div>) : (<div></div>) }
                 </div>
                 <div className='status_text_container'>
                     <div>{status_text}</div>
