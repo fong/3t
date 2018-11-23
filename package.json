@@ -3,7 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/history": "^4.7.2",
+    "applicationinsights": "^1.0.7",
+    "history": "^4.7.2",
     "react": "^16.6.0",
+    "react-appinsights": "^2.0.0",
     "react-bootstrap": "^0.32.4",
     "react-dom": "^16.6.0",
     "react-responsive-modal": "^3.5.0",
