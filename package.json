@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/applicationinsights-js": "^1.0.7",
     "@types/history": "^4.7.2",
     "applicationinsights": "^1.0.7",
     "history": "^4.7.2",
