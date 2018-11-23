@@ -344,10 +344,10 @@ class MainScreen extends React.Component<IProps, IState> {
                     {!this.state.player.playerID ? (
                     <div style={{margin: "32px"}}>
                         <div style={{margin: "8px"}}>
-                            <input id="playername" type="text" placeholder=" Player Name"></input>
+                            <input className="input-box" id="playername" type="text" placeholder=" Player Name"></input>
                         </div>
                         <div style={{margin: "8px"}}>
-                            <input id="passcode" type="text" placeholder=" Passcode"></input>
+                            <input className="input-box" id="passcode" type="text" placeholder=" Passcode"></input>
                         </div>
                         <div style={{margin: "8px", color: "red"}}>
                             {this.state.login_text}
@@ -360,11 +360,17 @@ class MainScreen extends React.Component<IProps, IState> {
                             <span><b>New User?</b></span>
                             <p>Create an account by entering a username and passcode!</p>
                         </div>
+                        <div className="noselect" onClick={() => toggleCSS()}>
+                            <i className="material-icons">invert_colors</i>
+                        </div>
                     </div>
                     ) : (
                     <div className="select-mode container">
                         <span>Logged in as {this.state.player.playerName}</span><br/>
                         <span>MMR: {this.state.player.mmr}  Wins: {this.state.player.wins}  Games: {this.state.player.games}  </span>
+                        <div className="noselect" onClick={() => toggleCSS()}>
+                            <i className="material-icons">invert_colors</i>
+                        </div>
 
                         <div className="row">
                             <div className='col mode'>
@@ -451,6 +457,21 @@ function generateRoomID() {
     var result = '';
     for (var i = 6; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
     return result;
+}
+
+function toggleCSS() {
+    console.log('click')
+	try {
+        let x = document.getElementById("theme_css") as HTMLLinkElement;
+		if (x.href.toString().substring(x.href.lastIndexOf('/')+1) === 'App.css'){
+            x.href = './App-dark.css';
+		} else {
+            x.href = './App.css';
+        }
+        console.log(x.href.toString().substring(x.href.lastIndexOf('/')+1))
+	} catch {
+
+	}
 }
 
 export default ReactAI.withTracking(MainScreen);

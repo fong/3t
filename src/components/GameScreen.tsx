@@ -263,15 +263,13 @@ class GameScreen extends React.Component<IProps, IState> {
                                     }
                                 })
                                 
-                                if (body.turn == temp_p){
-                                    this.setState({             // update game if new data received
-                                        turn: body.turn,
-                                        board: JSON.parse(body.board),
-                                        winner: cv.v,
-                                        p: temp_p,
-                                        color: cv.c
-                                    });
-                                }
+                                this.setState({             // update game if new data received
+                                    turn: body.turn,
+                                    board: JSON.parse(body.board),
+                                    winner: cv.v,
+                                    p: temp_p,
+                                    color: cv.c
+                                });
                                 this.props.gameCallback(body);
                             }
                         });
@@ -282,7 +280,7 @@ class GameScreen extends React.Component<IProps, IState> {
                     }
                 });
             }
-        }, 2000);
+        }, 1000);
     }
 
 	public render() {
@@ -307,8 +305,8 @@ class GameScreen extends React.Component<IProps, IState> {
                         <h3 className="roomcode">{this.props.game.gameID}</h3>
                     </div>
                     <div className="header-right">
-                        <button type="button" className="btn btn-outline-dark">
-                            <i className="material-icons">settings</i>
+                        <button type="button" className="btn btn-outline-dark" onClick={() => toggleCSS()}>
+                            <i className="material-icons">invert_colors</i>
                         </button>
                     </div>
 			    </div>
@@ -387,6 +385,21 @@ class GameScreen extends React.Component<IProps, IState> {
             </div>
         );
     }
+}
+
+function toggleCSS() {
+    console.log('click')
+	try {
+        let x = document.getElementById("theme_css") as HTMLLinkElement;
+		if (x.href.toString().substring(x.href.lastIndexOf('/')+1) === 'App.css'){
+            x.href = './App-dark.css';
+		} else {
+            x.href = './App.css';
+        }
+        console.log(x.href.toString().substring(x.href.lastIndexOf('/')+1))
+	} catch {
+
+	}
 }
 
 export default ReactAI.withTracking(GameScreen);
