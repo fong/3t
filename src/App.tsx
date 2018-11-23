@@ -6,6 +6,7 @@ import * as React from 'react';
 import GameScreen from './components/GameScreen';
 import MainScreen from './components/MainScreen';
 import ReactAI from 'react-appinsights';
+import {AppInsights} from "applicationinsights-js"
 
 interface IState {
 	screen: any,
@@ -48,6 +49,16 @@ class App extends React.Component<{}, IState> {
 			player: new Player(),
 			game: new Game()
 		} 
+	}
+
+	componentWillMount(){
+		AppInsights.trackPageView(
+            "App", /* (optional) page name */
+            "", /* (optional) page url if available */
+            { prop1: "prop1", prop2: "prop2" }, /* (optional) dimension dictionary */
+            { measurement1: 1 }, /* (optional) metric dictionary */
+            100 /* page view duration in milliseconds */
+        );
 	}
 
 	screenCtrl = (d: any) => {

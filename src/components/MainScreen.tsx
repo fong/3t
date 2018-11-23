@@ -2,6 +2,12 @@ import * as React from "react";
 import x from '../../src/x.png';
 import o from '../../src/o.png';
 import ReactAI from 'react-appinsights';
+import {AppInsights} from "applicationinsights-js"
+import * as MediaStreamRecorder from 'msr';
+
+function onMediaError(e: any) {
+    console.error('media error', e);
+}
 
 class Auth {
     public playerID: any;
@@ -70,6 +76,14 @@ class MainScreen extends React.Component<IProps, IState> {
     }
 
     componentWillMount(){
+        AppInsights.trackPageView(
+            "Maincreen", /* (optional) page name */
+            "", /* (optional) page url if available */
+            { prop1: "prop1", prop2: "prop2" }, /* (optional) dimension dictionary */
+            { measurement1: 1 }, /* (optional) metric dictionary */
+            100 /* page view duration in milliseconds */
+        );
+
         let url_games = "https://3t-api.azurewebsites.net/api/games";
         fetch(url_games, {
             method: 'GET'
@@ -305,6 +319,44 @@ class MainScreen extends React.Component<IProps, IState> {
         }, 5000);
     }
 
+    private searchTagByVoice(){
+        const mediaConstraints = {
+            audio: true
+        };
+        const onMediaSuccess = (stream: any) => {
+            const mediaRecorder = new MediaStreamRecorder(stream);
+            mediaRecorder.mimeType = 'audio/wav'; // check this line for audio/wav
+            mediaRecorder.ondataavailable = (blob: any) => {
+                let x = this.postAudio(blob);
+                console.log(x);
+                mediaRecorder.stop()
+            }
+            mediaRecorder.start(3000);
+        }
+        
+        navigator.getUserMedia(mediaConstraints, onMediaSuccess, onMediaError)
+    }
+
+    private postAudio(blob: any) {
+        fetch('', {
+            body: blob, // this is a .wav audio file    
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': 'Bearer' + 'eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ1cm46bXMuY29nbml0aXZlc2VydmljZXMiLCJleHAiOiIxNTQyNDg3ODI4IiwicmVnaW9uIjoid2VzdHVzIiwic3Vic2NyaXB0aW9uLWlkIjoiOWNjYjI2NGFmYjJlNDkzNjhmZDRiNTIzNGY1ZTFlYTUiLCJwcm9kdWN0LWlkIjoiU3BlZWNoU2VydmljZXMuRnJlZSIsImNvZ25pdGl2ZS1zZXJ2aWNlcy1lbmRwb2ludCI6Imh0dHBzOi8vYXBpLmNvZ25pdGl2ZS5taWNyb3NvZnQuY29tL2ludGVybmFsL3YxLjAvIiwiYXp1cmUtcmVzb3VyY2UtaWQiOiIiLCJzY29wZSI6InNwZWVjaHNlcnZpY2VzIiwiYXVkIjoidXJuOm1zLnNwZWVjaHNlcnZpY2VzLndlc3R1cyJ9.J088EkYXUHgW3EH7shOFTWUuMWKcS-W17LC3NH6kWDse',
+                'Content-Type': 'audio/wav;codec=audio/pcm; samplerate=16000',
+                'Ocp-Apim-Subscription-Key': '[YOUR SUBSCRIPTION KEY]'
+            },    
+            method: 'POST'
+        }).then((res) => {
+            return res.json()
+        }).then((res: any) => {
+            console.log(res)
+        }).catch((error) => {
+            console.log("Error", error)
+        });
+    
+    }
+
 	public render() {
         // const { open } = this.state
         let lg: any = [];
@@ -360,16 +412,18 @@ class MainScreen extends React.Component<IProps, IState> {
                             <span><b>New User?</b></span>
                             <p>Create an account by entering a username and passcode!</p>
                         </div>
-                        <div className="noselect" onClick={() => toggleCSS()}>
-                            <i className="material-icons">invert_colors</i>
+                        <div className="noselect">
+                            <i className="material-icons" onClick={() => toggleCSS()}>invert_colors</i>
+                            <i className="material-icons" onClick={() => this.searchTagByVoice()}>mic</i>
                         </div>
                     </div>
                     ) : (
                     <div className="select-mode container">
                         <span>Logged in as {this.state.player.playerName}</span><br/>
                         <span>MMR: {this.state.player.mmr}  Wins: {this.state.player.wins}  Games: {this.state.player.games}  </span>
-                        <div className="noselect" onClick={() => toggleCSS()}>
-                            <i className="material-icons">invert_colors</i>
+                        <div className="noselect">
+                            <i className="material-icons" onClick={() => toggleCSS()}>invert_colors</i>
+                            <i className="material-icons" onClick={() => this.searchTagByVoice()}>mic</i>
                         </div>
 
                         <div className="row">
