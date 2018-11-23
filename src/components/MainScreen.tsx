@@ -1,6 +1,7 @@
 import * as React from "react";
 import x from '../../src/x.png';
 import o from '../../src/o.png';
+import ReactAI from 'react-appinsights';
 
 class Auth {
     public playerID: any;
@@ -45,7 +46,7 @@ interface IState {
     leaderboard: any
 }
 
-export default class MainScreen extends React.Component<IProps, IState> {
+class MainScreen extends React.Component<IProps, IState> {
 
     interval1: any;
     interval2: any;
@@ -451,3 +452,5 @@ function generateRoomID() {
     for (var i = 6; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
     return result;
 }
+
+export default ReactAI.withTracking(MainScreen);

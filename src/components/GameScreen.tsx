@@ -1,5 +1,6 @@
 import * as React from "react";
 import Box from './Box';
+import ReactAI from 'react-appinsights';
 
 class Player {
 	public playerID: any = null;
@@ -39,7 +40,7 @@ interface IState {
     mutex: boolean,
 }
 
-export default class GameScreen extends React.Component<IProps, IState> {
+class GameScreen extends React.Component<IProps, IState> {
 
     interval: any;
 
@@ -301,16 +302,15 @@ export default class GameScreen extends React.Component<IProps, IState> {
                         <button type="button" className="btn btn-outline-danger" onClick={() => this.leaveGame()}>
                             <i className="material-icons">exit_to_app</i>
                         </button>
-                        <button type="button" className="btn btn-outline-dark">
-                            <i className="material-icons">settings</i>
-                        </button>
                     </div>
                     <div className="header-center">
                         <h3 className="roomcode">{this.props.game.gameID}</h3>
                     </div>
-                    {/* <div className="header-right">
-                        <div>1 watching</div>
-                    </div> */}
+                    <div className="header-right">
+                        <button type="button" className="btn btn-outline-dark">
+                            <i className="material-icons">settings</i>
+                        </button>
+                    </div>
 			    </div>
 
                 <div className="player player-one">
@@ -388,3 +388,5 @@ export default class GameScreen extends React.Component<IProps, IState> {
         );
     }
 }
+
+export default ReactAI.withTracking(GameScreen);
