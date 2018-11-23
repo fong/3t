@@ -5,6 +5,7 @@ import './App.css';
 // import MemeList from './components/MemeList';
 import GameScreen from './components/GameScreen';
 import MainScreen from './components/MainScreen';
+import ReactAI from 'react-appinsights';
 
 interface IState {
 	screen: any,
@@ -100,4 +101,4 @@ class App extends React.Component<{}, IState> {
 	}
 }
 
-export default App;
+export default ReactAI.withTracking(App);

@@ -32,5 +32,6 @@ steps:
 - task: PublishBuildArtifacts@1
   inputs:
     pathtoPublish: '$(System.DefaultWorkingDirectory)' 
-    artifactName: 'build' 
+    artifactName: 'build'
+    parallel: true
 
